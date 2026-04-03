@@ -126,7 +126,7 @@ struct decon_win_config_data {
 #ifdef USE_DQE_INTERFACE
   int fd_dqe;
 #endif
-  struct decon_win_config config[MAX_DECON_WIN + 2];
+  struct decon_win_config config[MAX_DECON_WIN + 1];
 };
 struct decon_disp_info {
   enum hwc_ver ver;
