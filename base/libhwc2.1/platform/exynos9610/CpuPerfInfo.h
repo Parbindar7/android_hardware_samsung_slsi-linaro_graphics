@@ -14,25 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef EXYNOS_DEVICE_MODULE_H
-#define EXYNOS_DEVICE_MODULE_H
+#ifndef CPU_PERF_INFO_H
+#define CPU_PERF_INFO_H
 
-#include "ExynosDevice.h"
-#include "CpuPerfInfo.h"
-
-class ExynosDeviceModule : public ExynosDevice {
-    public:
-        ExynosDeviceModule();
-        ~ExynosDeviceModule();
-        bool getCPUPerfInfo(int display, int config, int32_t *cpuIDs, int32_t *minClock);
-        enum {
-            SF_PERF_MODE_SET = -1,
-            SF_PERF_MODE_RESET = -2,
-        };
-        virtual int32_t presentDisplay(ExynosDisplay *display,
-                int32_t *outPresentFence) override;
-        bool mEPICState = false;
-        epic_handle mBoostingEPICHandle = 0;
-};
+#define CPU_CLUSTER0_MASK   0x3f /* Little cluster */
+#define CPU_CLUSTER1_MASK   0xc0 /* Big cluster */
+#define EPIC_LIBRARY_PATH "/vendor/lib64/libepic_helper.so"
+#define BOOST_SCENARIO_NAME "mem_boosting"
+#define BOOST_SCENARIO_NUM 2001
 
 #endif

@@ -24,7 +24,9 @@ class ExynosResourceManagerModule : public ExynosResourceManager {
     public:
         ExynosResourceManagerModule();
         virtual ~ExynosResourceManagerModule();
-        virtual uint32_t getExceptionScenarioFlag(ExynosMPP *mpp) override;
+#ifdef USE_HDR_INTERFACE
+        virtual int32_t prepareResources() override;
+#endif
         virtual void preAssignWindows() override;
 };
 

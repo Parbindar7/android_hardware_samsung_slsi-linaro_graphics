@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cutils/properties.h>
-
 #include "ExynosResourceManagerModule.h"
 #include "ExynosPrimaryDisplayModule.h"
 #include "ExynosMPPModule.h"
+#include "ExynosLayer.h"
+#include "ExynosHWCHelper.h"
+#include "ExynosGraphicBuffer.h"
+
+using namespace vendor::graphics;
 
 ExynosResourceManagerModule::ExynosResourceManagerModule()
         : ExynosResourceManager()
@@ -28,24 +31,23 @@ ExynosResourceManagerModule::~ExynosResourceManagerModule()
 {
 }
 
-uint32_t ExynosResourceManagerModule::getExceptionScenarioFlag(ExynosMPP *mpp) {
-    uint32_t ret = ExynosResourceManager::getExceptionScenarioFlag(mpp);
-
-    if (mpp->mPhysicalType != MPP_G2D)
-        return ret;
-
-    /* Check whether camera preview is running */
-    /* when camera is operating, HWC can't use G2D */
-    char value[PROPERTY_VALUE_MAX];
-    bool preview;
-    property_get("persist.vendor.sys.camera.preview", value, "0");
-    preview = !!atoi(value);
-
-    if (preview)
-        ret |= static_cast<uint32_t>(DisableType::DISABLE_SCENARIO);
-
+#ifdef USE_HDR_INTERFACE
+int32_t ExynosResourceManagerModule::prepareResources()
+{
+    int32_t ret = ExynosResourceManager::prepareResources();
+    for (size_t i = 0; i < mDisplays.size(); i++) {
+        if (mDisplays[i]->mPlugState == false)
+            continue;
+        for (size_t j = 0; j < mM2mMPPs.size(); j++) {
+            if ((mM2mMPPs[j]->mPhysicalType == MPP_G2D) &&
+                (mM2mMPPs[j]->mReservedDisplayInfo.displayIdentifier.id ==
+                 mDisplays[i]->mDisplayId))
+                ((ExynosMPPModule*)mM2mMPPs[j])->mHdrCoefInterface = mDisplays[i]->mHdrCoefInterface;
+        }
+    }
     return ret;
 }
+#endif
 
 void ExynosResourceManagerModule::preAssignWindows()
 {

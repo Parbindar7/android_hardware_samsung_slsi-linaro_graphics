@@ -30,6 +30,7 @@
 #define DP_CABLE_STATE_NAME "/sys/devices/platform/%s/extcon/extcon0/cable.%d/state"
 #define BRIGHTNESS_NODE_BASE "/sys/class/backlight/panel/brightness"
 #define MAX_BRIGHTNESS_NODE_BASE "/sys/class/backlight/panel/max_brightness"
+#define DOZE_VSYNC_PERIOD 33333333
 #define FORCE_DISABLE_DR
 
 #define IDMA(x) static_cast<decon_idma_type>(x)
@@ -73,13 +74,25 @@ struct exynos_display_t {
 };
 
 
-#define PRIMARY_MAIN_BASE_WIN   2
-#define EXTERNAL_MAIN_BASE_WIN  4
+#define PRIMARY_MAIN_EXTERNAL_WINCNT   2
+#define EXTERNAL_MAIN_EXTERNAL_WINCNT  4
 
 #define DISPLAY_MODE_MASK_LEN    8
 #define DISPLAY_MODE_MASK_BIT    0xff
 
+/* Decon WB */
+//#define DECON_WB_DEV_NAME "/dev/graphics/fb2"
+#define DECON_PRIMARY_DEV_NAME  "/dev/graphics/fb0"
+#define DECON_WB_DEV_NAME       "/dev/graphics/fb1"
+#define DECON_EXTERNAL_DEV_NAME "/dev/graphics/fb1"
+#define DECON_PAD_WB            8
+#define DECON_WB_SUBDEV_NAME    "exynos-decon2"
+#define DECON_EXT_BASE_WINDOW   0
+#define PRIMARY_MAIN_BASE_WIN   2
+#define EXTERNAL_MAIN_BASE_WIN  4
+
 #define G2D_MAX_SRC_NUM 7
+#define DEFAULT_MPP_DST_YUV_FORMAT HAL_PIXEL_FORMAT_EXYNOS_YCbCr_420_SPN_SBWC
 
 enum {
     DISPLAY_MODE_PRIMARY_MAIN = 0,  /* This is default mode */
@@ -105,6 +118,8 @@ const exynos_mpp_t AVAILABLE_OTF_MPP_UNITS[] = {
 };
 
 const exynos_mpp_t AVAILABLE_M2M_MPP_UNITS[] = {
+    {MPP_MSC, MPP_LOGICAL_MSC, "MSC0_PRI", 0, 0, HWC_DISPLAY_PRIMARY_BIT|EXTERNAL_MAIN_DISPLAY_PRIMARY_BIT},
+    {MPP_MSC, MPP_LOGICAL_MSC_YUV, "MSC0_EXT", 0, 1, HWC_DISPLAY_EXTERNAL_BIT|EXTERNAL_MAIN_DISPLAY_EXTERNAL_BIT},
     {MPP_G2D, MPP_LOGICAL_G2D_YUV, "G2D0-YUV_PRI", 0, 0, HWC_DISPLAY_PRIMARY_BIT|EXTERNAL_MAIN_DISPLAY_PRIMARY_BIT},
     {MPP_G2D, MPP_LOGICAL_G2D_YUV, "G2D0-YUV_EXT", 0, 1, HWC_DISPLAY_EXTERNAL_BIT|EXTERNAL_MAIN_DISPLAY_EXTERNAL_BIT},
     {MPP_G2D, MPP_LOGICAL_G2D_RGB, "G2D0-RGB_PRI", 0, 2, HWC_DISPLAY_PRIMARY_BIT|EXTERNAL_MAIN_DISPLAY_PRIMARY_BIT},
